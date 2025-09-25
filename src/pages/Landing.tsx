@@ -11,7 +11,7 @@ export const Landing: React.FC = () => {
         <div 
           className="absolute inset-0 bg-cover bg-center bg-no-repeat"
           style={{
-            backgroundImage: 'url(/Screenshot%202025-09-22%20220817.png)',
+            backgroundImage: 'url(/f1.jpg?v=2)',
           }}
         >
           <div className="absolute inset-0 bg-black/60"></div>
@@ -126,7 +126,7 @@ export const Landing: React.FC = () => {
               <div 
                 className="rounded-lg overflow-hidden shadow-2xl"
                 style={{
-                  backgroundImage: 'url(/Screenshot%202025-09-22%20220659.png)',
+                  backgroundImage: 'url(/f1%20lights.jpg?v=2)',
                   backgroundSize: 'cover',
                   backgroundPosition: 'center',
                   height: '400px'

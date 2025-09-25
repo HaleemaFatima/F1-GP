@@ -6,6 +6,7 @@ import { ToastContainer } from './components/Toast';
 import { Landing } from './pages/Landing';
 import { EventsList } from './pages/EventsList';
 import { EventDetail } from './pages/EventDetail';
+import { Qualifying } from './pages/Qualifying';
 import { Checkout } from './pages/Checkout';
 import { Success } from './pages/Success';
 import { MyOrders } from './pages/MyOrders';
@@ -22,6 +23,7 @@ function App() {
             <Route path="/" element={<Landing />} />
             <Route path="/events" element={<EventsList />} />
             <Route path="/event/:eventId" element={<EventDetail />} />
+            <Route path="/qualifying" element={<Qualifying />} />
             <Route path="/checkout" element={<Checkout />} />
             <Route path="/success" element={<Success />} />
             <Route path="/my-orders" element={<MyOrders />} />

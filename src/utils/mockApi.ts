@@ -6,15 +6,15 @@ const events: Event[] = [
     id: 'f1-gp-2025',
     name: 'F1 Grand Prix — Sunday',
     date: 'Nov 23, 2025 • 3:00 PM',
-    venue: 'Circuit de Monaco',
-    imageUrl: '/Screenshot%202025-09-22%20220817.png'
+    venue: 'Las Vegas Street Circuit',
+    imageUrl: '/f1.jpg?v=2'
   },
   {
-    id: 'f1-practice-2025',
-    name: 'F1 Practice Session',
+    id: 'qualifying-2025',
+    name: 'F1 Qualifying — Las Vegas 2025',
     date: 'Nov 21, 2025 • 10:00 AM',
-    venue: 'Circuit de Monaco',
-    imageUrl: '/Screenshot%202025-09-22%20220659.png'
+    venue: 'Las Vegas Street Circuit',
+    imageUrl: '/f1%20lights.jpg?v=2'
   }
 ];
 

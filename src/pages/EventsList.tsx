@@ -74,7 +74,7 @@ const EventCard: React.FC<EventCardProps> = ({ event }) => (
     <div className="relative h-48 overflow-hidden">
       <img
         src={event.imageUrl}
-        alt="F1 Circuit with Aerial Display"
+        alt={event.id === 'f1-gp-2025' ? 'F1 Grand Prix Sunday' : 'F1 Qualifying Session — Las Vegas'}
         className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
       />
       <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent"></div>

@@ -27,6 +27,9 @@ export const Navbar: React.FC = () => {
             <NavLink to="/events" active={location.pathname === '/events'}>
               Events
             </NavLink>
+            <NavLink to="/qualifying" active={location.pathname === '/qualifying'}>
+              Qualifying
+            </NavLink>
             <NavLink to="/my-orders" active={location.pathname === '/my-orders'}>
               My Orders
             </NavLink>
@@ -52,6 +55,9 @@ export const Navbar: React.FC = () => {
         <div className="px-4 py-2 space-x-4 flex">
           <NavLink to="/events" active={location.pathname === '/events'} mobile>
             Events
+          </NavLink>
+          <NavLink to="/qualifying" active={location.pathname === '/qualifying'} mobile>
+            Qualifying
           </NavLink>
           <NavLink to="/my-orders" active={location.pathname === '/my-orders'} mobile>
             Orders
