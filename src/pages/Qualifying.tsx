@@ -68,17 +68,6 @@ export const Qualifying: React.FC = () => {
     if (!currentEvent) return;
     
     const eventId = currentEvent.id;
-    
-    // Check if seat is actually available before attempting to hold
-    const seatInventory = inventory.find(inv => inv.seatId === seatId);
-    if (!seatInventory || seatInventory.status !== 'AVAILABLE') {
-      // Only show conflict modal if seat exists but is unavailable
-      if (seatInventory) {
-        setConflictSeatId(seatId);
-        setShowConflictModal(true);
-      }
-      return;
-    }
 
     // If seat is already selected, deselect it
     if (selectedSeats.includes(seatId)) {
@@ -97,11 +86,11 @@ export const Qualifying: React.FC = () => {
       
       if ('error' in result) {
         if (result.error === 'seat_unavailable') {
+          setConflictSeatId(seatId);
+          setShowConflictModal(true);
           // Refresh seat map to get latest status
           const seatMapData = await mockApi.getSeatMap(eventId);
           setSeatMap(seatMapData.seats, seatMapData.inventory);
-          setConflictSeatId(seatId);
-          setShowConflictModal(true);
         }
         return;
       }
@@ -124,7 +113,7 @@ export const Qualifying: React.FC = () => {
       console.error('Failed to hold seat:', error);
       addToast({ type: 'error', message: 'Failed to hold seat. Please try again.' });
     }
-  }, [currentEvent, inventory, selectedSeats, currentHold, userId, setSelectedSeats, setCurrentHold, addToast, setSeatMap]);
+  }, [currentEvent, selectedSeats, currentHold, userId, setSelectedSeats, setCurrentHold, addToast, setSeatMap]);
 
   // Handle hold expiry
   const handleHoldExpiry = useCallback(() => {
