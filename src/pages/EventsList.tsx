@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { Calendar, MapPin, ArrowRight, Loader } from 'lucide-react';
 import { useStore } from '../store/useStore';
-import { mockApi } from '../utils/mockApi';
+import { supabaseApi } from '../utils/supabaseApi';
 
 export const EventsList: React.FC = () => {
   const { events, isLoading, setEvents, setLoading } = useStore();
@@ -11,7 +11,7 @@ export const EventsList: React.FC = () => {
     const loadEvents = async () => {
       setLoading(true);
       try {
-        const eventsData = await mockApi.getEvents();
+        const eventsData = await supabaseApi.getEvents();
         setEvents(eventsData);
       } catch (error) {
         console.error('Failed to load events:', error);

@@ -2,7 +2,7 @@ import React, { useEffect, useState, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Calendar, MapPin, Filter, RefreshCw, ArrowRight, AlertTriangle } from 'lucide-react';
 import { useStore } from '../store/useStore';
-import { mockApi } from '../utils/mockApi';
+import { supabaseApi } from '../utils/supabaseApi';
 import { SeatMap } from '../components/SeatMap';
 import { SeatLegend } from '../components/SeatLegend';
 import { CountdownTimer } from '../components/CountdownTimer';
@@ -42,8 +42,8 @@ export const Qualifying: React.FC = () => {
       setLoading(true);
       try {
         const [event, seatMapData] = await Promise.all([
-          mockApi.getEvent(eventId),
-          mockApi.getSeatMap(eventId)
+          supabaseApi.getEvent(eventId),
+          supabaseApi.getSeatMap(eventId)
         ]);
 
         if (event) {
@@ -90,19 +90,19 @@ export const Qualifying: React.FC = () => {
 
     // If there's already a hold, release it first
     if (currentHold) {
-      await mockApi.releaseHold(currentHold.id);
+      await supabaseApi.releaseHold(currentHold.id);
       setCurrentHold(null);
     }
 
     try {
-      const result = await mockApi.createHold(currentEvent.id, seatId, userId);
+      const result = await supabaseApi.createHold(currentEvent.id, seatId, userId);
       
       if ('error' in result) {
         if (result.error === 'seat_unavailable') {
           setConflictSeatId(seatId);
           setShowConflictModal(true);
           // Refresh seat map to get latest status
-          const seatMapData = await mockApi.getSeatMap(currentEvent.id);
+         const seatMapData = await supabaseApi.getSeatMap(currentEvent.id);
           setSeatMap(seatMapData.seats, seatMapData.inventory);
         }
         return;
@@ -144,7 +144,7 @@ export const Qualifying: React.FC = () => {
     
     setIsRefreshing(true);
     try {
-      const seatMapData = await mockApi.getSeatMap(eventId);
+      const seatMapData = await supabaseApi.getSeatMap(eventId);
       setSeatMap(seatMapData.seats, seatMapData.inventory);
       addToast({ type: 'success', message: 'Seat map refreshed' });
     } catch (error) {

@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ArrowLeft, Shield, CreditCard, Lock, Loader } from 'lucide-react';
 import { useStore } from '../store/useStore';
-import { mockApi } from '../utils/mockApi';
+import { supabaseApi } from '../utils/supabaseApi';
 import { CountdownTimer } from '../components/CountdownTimer';
 
 export const Checkout: React.FC = () => {
@@ -54,7 +54,7 @@ export const Checkout: React.FC = () => {
       // Simulate payment processing with idempotency key
       const paymentRequestId = `payment-${Date.now()}-${Math.random()}`;
       
-      const result = await mockApi.confirmHold(currentHold.id, paymentRequestId);
+      const result = await supabaseApi.confirmHold(currentHold.id, paymentRequestId);
       
       if ('error' in result) {
         if (result.error === 'hold_expired') {

@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Calendar, MapPin, Download, Ticket, Search, Filter } from 'lucide-react';
 import { useStore } from '../store/useStore';
-import { mockApi } from '../utils/mockApi';
+import { supabaseApi } from '../utils/supabaseApi';
 
 export const MyOrders: React.FC = () => {
   const { userId, orders, tickets, setOrders, setTickets, isLoading, setLoading } = useStore();
@@ -14,8 +14,8 @@ export const MyOrders: React.FC = () => {
       setLoading(true);
       try {
         const [ordersData, ticketsData] = await Promise.all([
-          mockApi.getOrders(userId),
-          mockApi.getTickets(userId)
+          supabaseApi.getOrders(userId),
+          supabaseApi.getTickets(userId)
         ]);
         setOrders(ordersData);
         setTickets(ticketsData);

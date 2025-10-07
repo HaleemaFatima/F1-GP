@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Users, Calendar, Clock, TrendingUp, RefreshCw } from 'lucide-react';
-import { mockApi } from '../utils/mockApi';
+import { supabaseApi } from '../utils/supabaseApi';
 import { CountdownTimer } from '../components/CountdownTimer';
 
 export const Admin: React.FC = () => {
@@ -11,7 +11,7 @@ export const Admin: React.FC = () => {
   const loadAdminData = async () => {
     setIsLoading(true);
     try {
-      const data = await mockApi.getAdminData();
+      const data = await supabaseApi.getAdminData();
       setAdminData(data);
     } catch (error) {
       console.error('Failed to load admin data:', error);
