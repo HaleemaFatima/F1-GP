@@ -65,7 +65,7 @@ export const Qualifying: React.FC = () => {
 
   // Handle seat selection
   const handleSeatSelect = useCallback(async (seatId: string) => {
-    if (!currentEvent || !eventId) return;
+    if (!currentEvent) return;
 
     // If seat is already selected, deselect it
     if (selectedSeats.includes(seatId)) {
