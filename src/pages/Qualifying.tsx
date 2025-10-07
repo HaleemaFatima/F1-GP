@@ -65,13 +65,26 @@ export const Qualifying: React.FC = () => {
 
   // Handle seat selection
   const handleSeatSelect = useCallback(async (seatId: string) => {
-    if (!currentEvent) return;
-    
-    const eventId = currentEvent.id;
+    if (!currentEvent || !eventId) return;
 
     // If seat is already selected, deselect it
     if (selectedSeats.includes(seatId)) {
       setSelectedSeats(selectedSeats.filter(id => id !== seatId));
+      return;
+    }
+
+    // Check if seat exists and get its current status
+    const seatInventory = inventory.find(inv => inv.seatId === seatId);
+    if (!seatInventory) {
+      console.warn('Seat not found in inventory:', seatId);
+      return;
+    }
+
+    // If seat is already sold or held by someone else, show conflict modal immediately
+    if (seatInventory.status === 'SOLD' || 
+        (seatInventory.status === 'HELD' && seatInventory.holdUserId !== userId)) {
+      setConflictSeatId(seatId);
+      setShowConflictModal(true);
       return;
     }
 
@@ -82,14 +95,14 @@ export const Qualifying: React.FC = () => {
     }
 
     try {
-      const result = await mockApi.createHold(eventId, seatId, userId);
+      const result = await mockApi.createHold(currentEvent.id, seatId, userId);
       
       if ('error' in result) {
         if (result.error === 'seat_unavailable') {
           setConflictSeatId(seatId);
           setShowConflictModal(true);
           // Refresh seat map to get latest status
-          const seatMapData = await mockApi.getSeatMap(eventId);
+          const seatMapData = await mockApi.getSeatMap(currentEvent.id);
           setSeatMap(seatMapData.seats, seatMapData.inventory);
         }
         return;
@@ -98,7 +111,7 @@ export const Qualifying: React.FC = () => {
       // Successfully created hold
       const hold = {
         id: result.holdId,
-        eventId,
+        eventId: currentEvent.id,
         seatIds: [seatId],
         userId,
         expireAt: result.expireAt,
@@ -113,7 +126,7 @@ export const Qualifying: React.FC = () => {
       console.error('Failed to hold seat:', error);
       addToast({ type: 'error', message: 'Failed to hold seat. Please try again.' });
     }
-  }, [currentEvent, selectedSeats, currentHold, userId, setSelectedSeats, setCurrentHold, addToast, setSeatMap]);
+  }, [currentEvent, selectedSeats, currentHold, userId, inventory, setSelectedSeats, setCurrentHold, addToast, setSeatMap]);
 
   // Handle hold expiry
   const handleHoldExpiry = useCallback(() => {
