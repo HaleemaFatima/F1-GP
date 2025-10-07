@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
 import { Calendar, MapPin, Download, Ticket, Search, Filter } from 'lucide-react';
 import { useStore } from '../store/useStore';
 import { mockApi } from '../utils/mockApi';
@@ -114,9 +115,12 @@ export const MyOrders: React.FC = () => {
               }
             </p>
             {orders.length === 0 && (
-              <button className="bg-f1-red hover:bg-red-600 text-white font-semibold px-6 py-3 rounded-lg transition-colors">
+              <Link
+                to="/events"
+                className="bg-f1-red hover:bg-red-600 text-white font-semibold px-6 py-3 rounded-lg transition-colors inline-block"
+              >
                 Browse Events
-              </button>
+              </Link>
             )}
           </div>
         )}
