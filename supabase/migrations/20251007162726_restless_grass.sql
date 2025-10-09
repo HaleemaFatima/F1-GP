@@ -22,6 +22,7 @@
     - Indexes for performance
 */
 
+
 -- Enable UUID extension
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 
@@ -98,7 +99,7 @@ CREATE TABLE IF NOT EXISTS tickets (
   updated_at timestamptz DEFAULT now()
 );
 
--- Enable RLS
+-- Enable Row-Level Security (RLS)
 ALTER TABLE events ENABLE ROW LEVEL SECURITY;
 ALTER TABLE seats ENABLE ROW LEVEL SECURITY;
 ALTER TABLE seat_inventory ENABLE ROW LEVEL SECURITY;
@@ -106,7 +107,7 @@ ALTER TABLE holds ENABLE ROW LEVEL SECURITY;
 ALTER TABLE orders ENABLE ROW LEVEL SECURITY;
 ALTER TABLE tickets ENABLE ROW LEVEL SECURITY;
 
--- RLS Policies
+-- === RLS Policies ===
 
 -- Events: Public read access
 CREATE POLICY "Events are publicly readable"
@@ -150,7 +151,7 @@ CREATE POLICY "Users can view their own tickets"
   TO authenticated
   USING (auth.uid()::text = user_id);
 
--- Create indexes for performance
+-- === Indexes for performance ===
 CREATE INDEX IF NOT EXISTS idx_seat_inventory_event_id ON seat_inventory(event_id);
 CREATE INDEX IF NOT EXISTS idx_seat_inventory_status ON seat_inventory(status);
 CREATE INDEX IF NOT EXISTS idx_holds_user_id ON holds(user_id);
@@ -158,15 +159,16 @@ CREATE INDEX IF NOT EXISTS idx_holds_expire_at ON holds(expire_at);
 CREATE INDEX IF NOT EXISTS idx_orders_user_id ON orders(user_id);
 CREATE INDEX IF NOT EXISTS idx_tickets_user_id ON tickets(user_id);
 
--- Insert sample data
+-- === Sample Data ===
 
--- Sample events
-INSERT INTO events (id, name, date, venue, image_url) VALUES
-  ('f1-gp-2025', 'F1 Grand Prix — Sunday', 'Nov 23, 2025 • 3:00 PM', 'Las Vegas Street Circuit', '/f1.jpg?v=2'),
-  ('qualifying-2025', 'F1 Qualifying — Las Vegas 2025', 'Nov 21, 2025 • 10:00 AM', 'Las Vegas Street Circuit', '/f1%20lights.jpg?v=2')
-ON CONFLICT (id) DO NOTHING;
+-- Sample events (UUIDs auto-generated)
+INSERT INTO events (name, date, venue, image_url)
+VALUES
+  ('F1 Grand Prix — Sunday', 'Nov 23, 2025 • 3:00 PM', 'Las Vegas Street Circuit', '/f1.jpg?v=2'),
+  ('F1 Qualifying — Las Vegas 2025', 'Nov 21, 2025 • 10:00 AM', 'Las Vegas Street Circuit', '/f1%20lights.jpg?v=2')
+ON CONFLICT DO NOTHING;
 
--- Sample seats (generate programmatically)
+-- Generate sample seats (programmatically)
 DO $$
 DECLARE
   section_name text;
@@ -174,7 +176,6 @@ DECLARE
   row_num integer;
   seat_num integer;
 BEGIN
-  -- Generate seats for sections A-E
   FOR i IN 1..5 LOOP
     section_name := chr(64 + i); -- A, B, C, D, E
     section_price := CASE i
@@ -184,10 +185,8 @@ BEGIN
       WHEN 4 THEN 99
       ELSE 79
     END;
-    
-    -- 8 rows per section
+
     FOR row_num IN 1..8 LOOP
-      -- 5 seats per row
       FOR seat_num IN 1..5 LOOP
         INSERT INTO seats (id, section, row, number, price, is_accessible)
         VALUES (
@@ -196,7 +195,7 @@ BEGIN
           row_num::text,
           seat_num::text,
           section_price,
-          random() < 0.05 -- 5% wheelchair accessible
+          random() < 0.05
         )
         ON CONFLICT (id) DO NOTHING;
       END LOOP;
@@ -204,7 +203,7 @@ BEGIN
   END LOOP;
 END $$;
 
--- Generate seat inventory for both events
+-- Generate seat inventory for all events
 DO $$
 DECLARE
   event_record RECORD;
@@ -215,8 +214,6 @@ BEGIN
   FOR event_record IN SELECT id FROM events LOOP
     FOR seat_record IN SELECT id FROM seats LOOP
       rand_val := random();
-      
-      -- 12% sold, 3% held, 85% available
       IF rand_val < 0.12 THEN
         inventory_status := 'SOLD';
       ELSIF rand_val < 0.15 THEN
@@ -224,7 +221,7 @@ BEGIN
       ELSE
         inventory_status := 'AVAILABLE';
       END IF;
-      
+
       INSERT INTO seat_inventory (event_id, seat_id, status, hold_user_id)
       VALUES (
         event_record.id,
